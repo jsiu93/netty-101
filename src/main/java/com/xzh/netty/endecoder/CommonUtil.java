@@ -5,6 +5,8 @@ public class CommonUtil {
 
     public static final int LINE_BASED_FRAME_LENGTH = 64;
 
+    public static final int DELIMITER_BASED_FRAME_LENGTH = 128;
+
     public static String formatStr(String str, int assignLength) {
         int intStrlen = 0;
         if (str != null) {
