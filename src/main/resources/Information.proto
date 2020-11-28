@@ -1,0 +1,10 @@
+syntax = "proto3";
+option java_package = "com.xzh.netty.protobuf";
+option java_outer_classname = "InformationProto";
+message Information  {  
+  bytes header=1;
+  bytes msgtype=2;
+  fixed32 personnum=3;
+  float	price=4;  
+  string content=5;
+} 
