@@ -26,7 +26,7 @@ public class QueueTaskClientHandler extends SimpleChannelInboundHandler<Object> 
                 String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
                 System.out.println("start task..." + now);
                 try {
-                    TimeUnit.SECONDS.sleep(2L);
+                    TimeUnit.SECONDS.sleep(5L);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
