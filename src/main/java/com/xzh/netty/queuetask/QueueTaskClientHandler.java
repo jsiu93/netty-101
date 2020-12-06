@@ -20,21 +20,21 @@ public class QueueTaskClientHandler extends SimpleChannelInboundHandler<Object> 
         InformationProto.Information information = (InformationProto.Information) msg;
         System.out.println("received msg:" + information.getContent());
 
-        ctx.channel().eventLoop().execute(new Runnable() {
-            @Override
-            public void run() {
-                String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
-                System.out.println("start task..." + now);
-                try {
-                    TimeUnit.SECONDS.sleep(5L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
-                System.out.println("end task..." + now);
-
-            }
-        });
+//        ctx.channel().eventLoop().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
+//                System.out.println("start task..." + now);
+//                try {
+//                    TimeUnit.SECONDS.sleep(5L);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
+//                System.out.println("end task..." + now);
+//
+//            }
+//        });
 
     }
 

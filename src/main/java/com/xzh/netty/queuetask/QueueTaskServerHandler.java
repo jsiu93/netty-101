@@ -8,6 +8,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 @ChannelHandler.Sharable
 public class QueueTaskServerHandler extends ChannelInboundHandlerAdapter {
@@ -18,6 +19,22 @@ public class QueueTaskServerHandler extends ChannelInboundHandlerAdapter {
         System.out.println("received msg:" + information.getContent());
 
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
+
+        ctx.executor().execute(new Runnable() {
+            @Override
+            public void run() {
+                String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
+                System.out.println("start task..." + now);
+                try {
+                    TimeUnit.SECONDS.sleep(5L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
+                System.out.println("end task..." + now);
+            }
+        });
+
         byte[] header = new byte[]{0x5A, 0x5A};
         byte[] msgType = new byte[0x01];
 
@@ -54,6 +71,34 @@ public class QueueTaskServerHandler extends ChannelInboundHandlerAdapter {
         // this method only be invoked once
         Channel incoming = ctx.channel();
         System.out.println("client " + incoming.remoteAddress() + " online");
+
+        ctx.executor().scheduleAtFixedRate(new Runnable() {
+            ChannelHandlerContext ctx;
+
+            @Override
+            public void run() {
+                String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS"));
+                byte[] header = new byte[]{0x5A, 0x5A};
+                byte[] msgType = new byte[0x01];
+
+                InformationProto.Information information = InformationProto.Information.newBuilder()
+                        .setHeader(ByteString.copyFrom(header))
+                        .setMsgtype(ByteString.copyFrom(msgType))
+                        .setPersonnum(233)
+                        .setPrice(0.1f)
+                        .setContent("[heartbeat from server] hello client. " + now)
+                        .build();
+                ctx.writeAndFlush(information);
+            }
+
+            // assign member variable
+            public Runnable accept(ChannelHandlerContext ctxx) {
+                this.ctx = ctxx;
+                return this;
+            }
+
+
+        }.accept(ctx), 0, 3, TimeUnit.SECONDS);
 
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 //        ctx.writeAndFlush(Unpooled.copiedBuffer("server channelActive " + now + "\n", StandardCharsets.UTF_8));
